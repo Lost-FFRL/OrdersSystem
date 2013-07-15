@@ -1,0 +1,21 @@
+.nvg_menu {
+    background: url("../images/menu_bg1.png") no-repeat scroll 0 0
+        transparent;
+    color: #FFFFFF;
+    display: block;
+    font-size: 14px;
+    font-weight: bold;
+    height: 30px;
+    padding: 13px 30px 0;
+    text-align: left;
+    text-decoration: none;
+    text-transform: uppercase;
+    cursor: pointer;
+    margin-top: 5px;
+}
+
+.nvg_hover {
+    text-align: right;
+    background: url("../images/menu_bg2.png") no-repeat scroll 0 0
+        transparent;
+}

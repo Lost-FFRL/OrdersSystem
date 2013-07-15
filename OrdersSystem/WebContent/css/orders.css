@@ -1,0 +1,9 @@
+.query_name_td {
+	text-align: right;
+}
+
+.query_input {
+	height: 20px;
+	text-align: left;
+	width: 130px;
+}
