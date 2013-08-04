@@ -152,3 +152,32 @@ body {
 	width: 80px;
 	cursor: pointer;
 }
+
+    
+
+/*表格数据操作*/
+.opreate{
+    color: #0000FF;
+    cursor: pointer;
+    margin: 0 2px;
+    text-decoration: underline;
+}
+/*数据展示*/
+.show_data{
+    margin: 0 auto;
+    width: 90%;
+}
+/*分页样式*/
+.page{
+
+}
+.page .previous{
+    margin-right: 20px;
+    cursor: pointer;
+}
+
+.page .next{
+    margin-left: 20px;
+    cursor: pointer;
+}
+

@@ -144,7 +144,7 @@ define([ "util/param", "tmpl/htmlmodel","tmpl/commtmpl","doT" ],
             fn = doT.compile(commTmpl.manageContainer, def);
             $("#content_right_mid").append(fn(data));
         }
-        $("#content_right_top").empty().append("<h1>" + param.userManager + "</h1>");
+        $("#content_right_top").empty().append("<div id='title' ><h1>" + param.userManager + "</h1></div>");
     }
 
     
