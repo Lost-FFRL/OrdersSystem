@@ -2,7 +2,7 @@ package com.os.server.impl;
 
 import java.util.List;
 
-
+import com.os.bean.Page;
 import com.os.bean.User;
 import com.os.dao.UserDao;
 import com.os.dao.impl.UserDaoImpl;
@@ -10,7 +10,7 @@ import com.os.server.UserService;
 
 public class UserServiceImpl implements UserService
 {
-//    private final Logger LOG = Logger.getLogger(UserServiceImpl.class);
+    // private final Logger LOG = Logger.getLogger(UserServiceImpl.class);
     
     private UserDao userDao;;
     
@@ -55,10 +55,18 @@ public class UserServiceImpl implements UserService
         return userDao.delUpdateByIds(ids);
     }
     
-    @Override
-    public List<User> query(User user)
+    /**
+     * 获取总量
+     */
+    public int getCount(User user)
     {
-        return userDao.query(user);
+        return userDao.getCount(user);
+    }
+    
+    @Override
+    public List<User> query(User user, Page page)
+    {
+        return userDao.query(user, page);
     }
     
     @Override
@@ -69,6 +77,7 @@ public class UserServiceImpl implements UserService
     
     /**
      * 检查用户名密码是否正确
+     * 
      * @param account
      * @param pwd
      * @return

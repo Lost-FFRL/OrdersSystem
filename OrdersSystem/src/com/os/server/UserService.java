@@ -2,6 +2,7 @@ package com.os.server;
 
 import java.util.List;
 
+import com.os.bean.Page;
 import com.os.bean.User;
 
 public interface UserService
@@ -44,12 +45,14 @@ public interface UserService
      */
     boolean delUpdateByIds(String ids);
     
+    int getCount(User user);
+    
     /**
      * 查询
      * @param obj
      * @return
      */
-    List<User> query(User user);
+    List<User> query(User user,Page page);
     
     /**
      * 检测是否存在

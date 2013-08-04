@@ -45,7 +45,10 @@ public abstract class BaseDaoAbstract implements BaseDao
             }
             conn = ds.getConnection();
             statement = conn.createStatement();
-            result = statement.execute(sql);
+            int count = statement.executeUpdate(sql);
+            if (count > 0 ){
+                result = true;
+            }
         }
         catch (SQLException e)
         {
@@ -187,6 +190,47 @@ public abstract class BaseDaoAbstract implements BaseDao
         return false; 
     }
     
+    /**
+     * 获取总量
+     * @return
+     */
+    protected int getCount(String table,String condition)
+    {
+        if (Utils.isNotNull(table))
+        {
+            StringBuffer sb = new StringBuffer();
+            sb.append("SELECT COUNT(ID) AS NUM FROM ")
+                .append(table)
+                .append(" WHERE 1=1 ")
+                .append(condition);
+            LOG.debug("getCount execute SQL = " + sb);
+            try
+            {
+                conn = ds.getConnection();
+                statement = conn.createStatement();
+                rs = statement.executeQuery(sb.toString());
+                if (null != rs && rs.next())
+                {
+                    return rs.getInt("num");
+                }
+            }
+            catch (SQLException e)
+            {
+                LOG.error("CheckIsExists param = " + sb);
+                LOG.error("Expection : " + e);
+            }
+            finally
+            {
+                clearConnection();
+            }
+        }
+        else 
+        {
+            LOG.info("CheckIsExists param is null !");
+        }
+        return 0; 
+    }
+    
     protected int count(String sql){
         return 0;
     };
@@ -234,5 +278,7 @@ public abstract class BaseDaoAbstract implements BaseDao
         statement = null;
         conn = null;
     }
+    
+    
     
 }

@@ -1,9 +1,11 @@
 package com.os.action;
 
+
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 
+import com.os.bean.Page;
 import com.os.bean.User;
 import com.os.server.UserService;
 import com.os.server.impl.UserServiceImpl;
@@ -32,7 +34,7 @@ public class UserAction extends BaseAction
                 result = userAction.queryUser(type, req);
                 break;
             case 2:
-
+                result = userAction.delUser(type, req);
                 break;
             default:
                 result = Utils.getRespJson(-2, type, Code.DESC_NO_SUPPORT, Constants.STRING_EMPTY);
@@ -68,16 +70,46 @@ public class UserAction extends BaseAction
             code = Code.FAIL_1;
             desc = Code.DESC_FAIL;
         }
-        return Utils.getRespJson(code, type, desc, Constants.STRING_EMPTY);
+        return Utils.getRespJson(code, type, desc);
+    }
+    
+    public String delUser(int type, HttpServletRequest req){
+        userService = new UserServiceImpl();
+        String ids = req.getParameter("ids");
+        int code = 0;
+        String desc = "";
+        if (userService.delUpdateByIds(ids))
+        {
+            code = Code.SUECCESS;
+            desc = Code.DESC_SUCCESS;
+        }
+        else
+        {
+            code = Code.FAIL_1;
+            desc = Code.DESC_FAIL;
+        }
+        return Utils.getRespJson(code, type, desc);
     }
     
     public String queryUser(int type, HttpServletRequest req)
     {
+        Page page = null;
         userBean = new User();
         userBean.setName(req.getParameter("name"));
         userBean.setPhone(req.getParameter("phone"));
         userService = new UserServiceImpl();
-        return Utils.getRespJson(Code.SUECCESS, type, Code.DESC_SUCCESS, userService.query(userBean));
+        int count = userService.getCount(userBean);
+        if (count > 0){
+            page = new Page();
+            page.setTotal(count);
+            int pageSize =Integer.parseInt(null == req.getParameter("pageSize") ? "10" : req.getParameter("pageSize"));
+            int curPage = Integer.parseInt(null == req.getParameter("curPage") ? "1" : req.getParameter("curPage"));
+            page.setPageSize(pageSize <= 0 ? 10 : pageSize);
+            page.setCurPage(curPage <= 0 ? 1 : curPage);
+            List<User> reuslt = userService.query(userBean,page); 
+            page.setResult(reuslt);
+        }
+        return Utils.getRespJson(Code.SUECCESS, type, Code.DESC_SUCCESS, page);
     }
     
     public String checkUser(int type, HttpServletRequest req)
@@ -98,7 +130,7 @@ public class UserAction extends BaseAction
             code = Code.FAIL_1;
             desc = Code.DESC_FAIL;
         }
-        return Utils.getRespJson(code, type, desc, Constants.STRING_EMPTY);
+        return Utils.getRespJson(code, type, desc);
     }
     
     public String login(int type, HttpServletRequest req)
@@ -123,6 +155,6 @@ public class UserAction extends BaseAction
             code = Code.FAIL_1;
             desc = Code.DESC_FAIL;
         }
-        return Utils.getRespJson(code, type, desc, Constants.STRING_EMPTY);
+        return Utils.getRespJson(code, type, desc);
     }
 }

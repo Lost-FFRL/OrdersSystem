@@ -6,6 +6,7 @@ import java.util.List;
 
 import org.apache.log4j.Logger;
 
+import com.os.bean.Page;
 import com.os.bean.User;
 import com.os.dao.UserDao;
 import com.os.util.SqlUtils;
@@ -130,9 +131,10 @@ public class UserDaoImpl extends BaseDaoAbstract implements UserDao
         }
         return delete(excSql.toString());
     }
+    
     public boolean delUpdateByIds(String ids)
     {
-        return delUpdateByIds(userTable,ids);
+        return delUpdateByIds(userTable, ids);
     }
     
     @Override
@@ -147,7 +149,7 @@ public class UserDaoImpl extends BaseDaoAbstract implements UserDao
     }
     
     @Override
-    public List<User> query(User user)
+    public List<User> query(User user, Page page)
     {
         if (null == user)
         {
@@ -157,11 +159,20 @@ public class UserDaoImpl extends BaseDaoAbstract implements UserDao
         excSql = new StringBuffer();
         excSql.append("select id,num,name,`desc`,sex,phone,mobile,account,address,authority,remark ")
             .append(" from " + userTable + " where 1=1 ")
-            .append(SqlUtils.querySql("and", "num", "like", user.getNumber()))
-            .append(SqlUtils.querySql("and", "name", "like", user.getName()))
-            .append(SqlUtils.querySql("and", "mobile", "like", user.getMobile()))
-            .append(SqlUtils.querySql("and", "account", "=", user.getAccount()))
-            .append(SqlUtils.querySql("and", "phone", "like", user.getPhone()));
+            .append(SqlUtils.querySql("AND", "num", "LIKE", user.getNumber()))
+            .append(SqlUtils.querySql("AND", "name", "LIKE", user.getName()))
+            .append(SqlUtils.querySql("AND", "mobile", "LIKE", user.getMobile()))
+            .append(SqlUtils.querySql("AND", "account", "=", user.getAccount()))
+            .append(SqlUtils.querySql("AND", "phone", "LIKE", user.getPhone()))
+            .append(SqlUtils.querySql("AND", "status", "!=", "0"))
+            .append(" ORDER BY createDate DESC ");
+        if (null != page)
+        {
+            int start = (page.getCurPage()-1) * page.getPageSize();
+            start = start < 0 ? 0 : start;
+            int end = start + page.getPageSize() - 1;
+            excSql.append("LIMIT " + start + "," + end);
+        }
         LOG.debug("Execute SQL = " + excSql.toString());
         List<User> userList = null;
         User userBean = null;
@@ -201,6 +212,24 @@ public class UserDaoImpl extends BaseDaoAbstract implements UserDao
             clearConnection();
         }
         return userList;
+    }
+    
+    @Override
+    public int getCount(User user)
+    {
+        if (null == user)
+        {
+            LOG.info("User query param is null !");
+            return 0;
+        }
+        excSql = new StringBuffer();
+        excSql.append(SqlUtils.querySql("and", "num", "like", user.getNumber()))
+            .append(SqlUtils.querySql("and", "name", "like", user.getName()))
+            .append(SqlUtils.querySql("and", "mobile", "like", user.getMobile()))
+            .append(SqlUtils.querySql("and", "account", "=", user.getAccount()))
+            .append(SqlUtils.querySql("and", "phone", "like", user.getPhone()))
+            .append(SqlUtils.querySql("and", "status", "!=", "0"));
+        return getCount(userTable, excSql.toString());
     }
     
     @Override
