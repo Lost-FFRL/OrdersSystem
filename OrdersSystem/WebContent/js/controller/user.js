@@ -1,28 +1,63 @@
-define([ "util/param", "tmpl/htmlmodel", "lib/atcTemplate" ], function(param, htmlModel, atcT) {
+define([ "util/param", "tmpl/htmlmodel","tmpl/commtmpl","doT" ], 
+        function(param, htmlModel,commTmpl,doT) {
 
     var url = window.location.href + "Service/User";
-
-    /**
-     * 数据模型
-     */
-    var queryDataModel = {
-        queryId : "user_query",
-        queryCls : "",
-        tableCls : "query_table",
-        tdCls : "query_td",
-        inputCls : "query_input",
-        normalBut : "normal_But",
-        name : param.name,
-        nameId : "user_name",
-        phone : param.phone,
-        phoneId : "user_phone",
-        addBut : param.add,
-        queryBut : param.query,
-        userAdd : "user_add",
-        userQuery : "user_query"
-    };
+    
+    var dataModel = ["account","name","sex","mobile","address","remark","operate"];
+    
     function addEventListener() {
         queryUser();
+        
+        $("#user_query_result .user_opreate").click(function(event){
+            var userId = $(this).parent().attr("user_id");
+            var index = $("#user_opreate > span").index(this);
+            cosnole.info(userId);
+            cosnole.info(event);
+        });
+//        delUser();
+    }
+    
+    /**
+     * 数据绑定操作事件
+     */
+    function dataOpreate(){
+        $("#user_query_result .opreate").click(function(event){
+            var userId = $(this).parent().parent().attr("data_id");
+            switch ($(this).index()){
+            case 0:
+                //详情
+                break;
+            case 1:
+                //修改
+                break;
+            case 2:
+                //删除
+                delUser(userId);
+                break;
+            default:
+                break;
+            }
+        });
+    }
+    
+    function delUser(ids){
+        $.post(url, {
+            ids : ids,
+            type : 2
+        },function (data){
+            if(data.code == "0"){
+                var id = ids.split(","),idx;
+                for (idx in id){
+//                    var tr = $("#user_query_result tr[data_id='" + id[idx] + "']");
+//                    tr.fadeOut("4000",function(){
+//                        $(this).remove();
+//                    });
+                    $("#user_query_result tr[data_id='" + id[idx] + "']").remove();
+                }
+            }else {
+                //删除失败，提示
+            }
+        },"json");
     }
 
     function queryUser() {
@@ -33,63 +68,86 @@ define([ "util/param", "tmpl/htmlmodel", "lib/atcTemplate" ], function(param, ht
             $.post(url, {
                 name : name,
                 phone : phone,
-                pageNum : 1,
-                pageSize : 10,
-                type : 0,
-                order : 0
+                curPage : 1,
+                pageSize : 5,
+                type : 1
             }, function(data){showData(data);}, "json");
         });
     }
+    
+    
 
     function showData(data) {
-        console.info(data);
+        $("#user_query_result > tbody").empty();
+        var def = {
+            page : commTmpl.page
+        },
+        userFn = doT.compile(commTmpl.dataTbody, def),
+        data = {
+            data : data.content.result,
+            model : dataModel,
+            operate : [ param.detail, param.modified, param.del ],
+            page : {
+                id : "userPage",
+                previous : param.previous_page,
+                next : param.next_page
+            }
+        };
+        $("#user_query_result > tbody").html(userFn(data));
+        
+        dataOpreate();
+
     }
 
     function create() {
-        if ($("#content_5").length >= 1) {
-            $("#content_5").show();
+        if ($("#user_manager").length >= 1) {
+            $("#user_manager").show();
         } else {
-            var render = atcT.compile(htmlModel.queryTable);
-            var html = render({
+            var inpFn = doT.template(commTmpl.inputTd),
+            selFn = doT.template(commTmpl.selectTd),
+            butFn = doT.template(commTmpl.norBut),
+            data = {
+                mcId : "user_manager",
+                mcCls : "",
                 id : "user_query",
-                cls : "",
-                tableCls : "query_table",
-                list : [
-                        {
-                            1 : "query_td",
-                            2 :  param.name,
-                            3 : "user_name",
-                            4 : "query_input",
-                            5 : "query_td",
-                            6 : param.phone,
-                            7 : "user_phone",
-                            8 : "query_input"
-                        },
-                        [
-                            "user_add",
-                            "normal_But",
-                            param.add,
-                            "user_query",
-                            "normal_But",
-                            param.query
-                        ]
-                    ]
-            });
-            
-            /*var html = htmlModel.userQueTable.format(queryDataModel);
-            html = htmlModel.search.format({
-                search : html
-            });
-            html = htmlModel.div.format({
-                id : "content_5",
-                cls : "",
-                html : html
-            });*/
-            $("#content_right_mid").append(html);
+                resultCls : "result_container",
+                tableId : "user_query_result",
+                list : [ {
+                    first : inpFn({
+                        id : "user_name",
+                        name : param.name,
+                        cls : ""
+                    }),
+                    second : inpFn({
+                        id : "user_phone",
+                        name : param.phone,
+                        cls : ""
+                    })
+                }, {
+                    first : butFn({
+                        id : "user_add",
+                        name : param.add
+                    }),
+                    second : butFn({
+                        id : "user_query",
+                        name : param.query
+                    })
+                } ],
+                thead : [ param.user_account, param.user_name, param.user_sex, param.user_phone, param.user_address,
+                        param.user_remark, param.data_manage ]
+            },
+            def = {
+                search: commTmpl.queryTable,
+                top: commTmpl.search,
+                mid: commTmpl.result
+            },
+            fn = doT.compile(commTmpl.manageContainer, def);
+            $("#content_right_mid").append(fn(data));
         }
         $("#content_right_top").empty().append("<h1>" + param.userManager + "</h1>");
     }
 
+    
     function init() {
         create();
         addEventListener();
