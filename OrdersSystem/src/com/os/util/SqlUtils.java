@@ -21,9 +21,9 @@ public class SqlUtils
         if (Utils.isNotNull(name) 
             && Utils.isNotNull(String.valueOf(value)))
         {
-            if ("like".equals(condition))
+            if ("like".equalsIgnoreCase(condition))
             {
-                val = " " + relation + " " + name + " like '%" + value + "%'";
+                val = " " + relation + " " + name + " LIKE '%" + value + "%'";
             }
             else
             {

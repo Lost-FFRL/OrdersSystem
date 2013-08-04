@@ -88,4 +88,39 @@ public class Utils
         }
         return result;
     }
+    
+    /**
+     * 响应成功或失败，不返回数据
+     * @param code
+     * @param type
+     * @param desc
+     * @return
+     */
+    public static String getRespJson(int code, int type, String desc)
+    {
+        String result = "";
+        try
+        {
+            ObjectMapper om = new ObjectMapper();
+            JsonResult js = new JsonResult();
+            js.setCode(String.valueOf(code));
+            js.setType(String.valueOf(type));
+            js.setDesc(desc);
+            js.setContent("");
+            result = om.writeValueAsString(js);
+        }
+        catch (JsonGenerationException e)
+        {
+            logger.error(e);
+        }
+        catch (JsonMappingException e)
+        {
+            logger.error(e);
+        }
+        catch (IOException e)
+        {
+            logger.error(e);
+        }
+        return result;
+    }
 }

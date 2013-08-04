@@ -1,0 +1,59 @@
+.data_table {
+	margin: 0 auto;
+    width: 596px;
+    background: #FFF;
+    border-spacing: 0;
+    border: 1px solid #CCCCCC;
+    border-radius: 6px 6px 6px 6px;
+    box-shadow: 0 1px 1px #CCCCCC;
+}
+.data_table tr:hover {
+    background: none repeat scroll 0 0 #FBF0E0;
+    transition: all 0.1s ease-in-out 0s;
+}
+.data_table td, .data_table th {
+    border-left: 1px solid #CCCCCC;
+    border-top: 1px solid #CCCCCC;
+    padding: 6px;
+    text-align: center;
+    text-overflow: ellipsis;
+}
+.data_table th {
+    background-color: #DCE9F9;
+    background-image: -moz-linear-gradient(center top , #EBF3FC, #DCE9F9);
+    border-top: medium none;
+    box-shadow: 0 1px 0 rgba(255, 255, 255, 0.8) inset;
+    text-shadow: 0 1px 0 rgba(255, 255, 255, 0.5);
+}
+.data_table td:first-child, .data_table th:first-child {
+    border-left: medium none;
+}
+.data_table th:first-child {
+    border-radius: 6px 0 0 0;
+}
+.data_table th:last-child {
+    border-radius: 0 6px 0 0;
+}
+.data_table th:only-child {
+    border-radius: 6px 6px 0 0;
+}
+.data_table tr:last-child td:first-child {
+    border-radius: 0 0 0 6px;
+}
+.data_table tr:last-child td:last-child {
+    border-radius: 0 0 6px 0;
+}
+
+/*查询表格样式*/
+.result_container {
+    height: 500px;
+    margin-top: 20px;
+    width: 100%;
+}
+
+.query_table td span{
+    float: left;
+    text-align: right;
+    width: 100px;
+}
+

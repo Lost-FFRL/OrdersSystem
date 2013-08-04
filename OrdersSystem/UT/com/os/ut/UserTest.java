@@ -86,11 +86,11 @@ public class UserTest
         
         User user = new User();
         user.setNumber("os");
-        List<User> list = dao.query(user);
-        for (User u : list)
-        {
-            System.out.println("查询结果" + u.toString());
-        }
+//        List<User> list = dao.query(user);
+//        for (User u : list)
+//        {
+//            System.out.println("查询结果" + u.toString());
+//        }
     }
     
 }

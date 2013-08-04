@@ -39,7 +39,8 @@ public class Test
         // uer.setPassword("pwd");
         // ObjectMapper oMapper = new ObjectMapper();
         // System.out.println(oMapper.writeValueAsString(user));
-        Test.jTest();
+//        Test.jTest();
+        System.out.println(Test.A());
     }
     
     static void jsonTest()
@@ -47,7 +48,7 @@ public class Test
         ObjectMapper om = null;
         try
         {
-            Map<String,String> map = new HashMap<String, String>();
+            Map<String, String> map = new HashMap<String, String>();
             map.put("returns", String.valueOf(1));
             map.put("type", String.valueOf(1));
             map.put("desc", "success");
@@ -64,15 +65,57 @@ public class Test
         }
     }
     
-    static void jTest (){
+    static void jTest()
+    {
         List<User> userList = new ArrayList<User>();
-         for (int i = 0; i < 5; i++)
-         {
-             User user = new User();
-             user.setAccount("name" + i);
-             user.setPassword("pwd" + i);
-             userList.add(user);
-         }
-         System.out.println(Utils.getRespJson(0, 0, "test", userList));
+        for (int i = 0; i < 5; i++)
+        {
+            User user = new User();
+            user.setAccount("name" + i);
+            user.setPassword("pwd" + i);
+            userList.add(user);
+        }
+        System.out.println(Utils.getRespJson(0, 0, "test", userList));
+    }
+    
+    public static boolean A()
+    {
+        boolean needReVerify = true;
+//        int typeOfInusreOld = 0;
+//        int typeOfInusreNew = 0;
+//        if (typeOfInusreOld > 0 && typeOfInusreNew > 0 && (typeOfInusreOld != typeOfInusreNew))
+//        {
+//            if (typeOfInusreOld == 1)
+//            {
+//                if (typeOfInusreNew != 3 && typeOfInusreNew != 2)
+//                    needReVerify = false;
+//            }
+//            else if (typeOfInusreOld == 2)
+//            {
+//                if (typeOfInusreNew != 3 && typeOfInusreNew != 1)
+//                    needReVerify = false;
+//            }
+//            else
+//            {
+//                needReVerify = false;
+//            }
+//        }
+//        else
+//        {
+//            needReVerify = false;
+//        }
+        
+        int typeOfInusreOld = 2;
+        int typeOfInusreNew = 3;
+        needReVerify = false;
+        if (typeOfInusreOld == 1 || typeOfInusreOld == 2){
+            int min = (typeOfInusreOld == 1 ? 2 : 1);  
+            if (typeOfInusreNew != typeOfInusreOld
+                && (typeOfInusreNew == 3
+                || typeOfInusreNew == min)){
+                needReVerify = true;
+            }
+        }
+        return needReVerify;
     }
 }
