@@ -12,7 +12,7 @@ define(["util/utils"],function(utils) {
         xh.open("POST", window.location.href + "Service/Login", true);
         xh.setRequestHeader("Content-Type","application/x-www-form-urlencoded; charset=utf-8");
         xh.setRequestHeader("Accept","text/plain");
-        xh.send(utils.param({user:"FFRL_1", pwd: "123456",type:0}));
+        xh.send(utils.param({user:"FFRL_01", pwd: "123456",type:0}));
 //        xh.send("user=aaa&pwd=woaiguo");
         
 //        $.ajax({

@@ -7,28 +7,84 @@ define([ "util/param", "tmpl/htmlmodel","tmpl/commtmpl","doT" ],
     
     function addEventListener() {
         queryUser();
-        
-        $("#user_query_result .user_opreate").click(function(event){
-            var userId = $(this).parent().attr("user_id");
-            var index = $("#user_opreate > span").index(this);
-            cosnole.info(userId);
-            cosnole.info(event);
-        });
-//        delUser();
+        addUser();
+//        dataOpreate();
+    }
+    
+    function addUser(){
+    	
+    	$("#user_add_btn").click(function(){
+    		$("#result_container").children().hide();
+
+    		if ($("#add_user_form").length >= 1){
+    			$("#add_user_form").show();
+    			return;
+    		}
+    		html = '<div id="add_user_form" class="form"><table>'
+    			+ '<tr>'
+    			+ '<td><label>姓名</label></td>'
+    			+ '<td><input name="name" /></td>'
+    			+ '<td><label>性别</label></td>'
+    			+ '<td>'
+    			+ '<input type="radio" name="sex" value="1" />男'
+    			+ '<input type="radio" name="sex"  value="0"/>女'
+    			+ '</td>'
+    			+ '</tr><tr>'
+    			+ '<td><label>帐号</label></td>'
+    			+ '<td><input name="account" /></td>'
+    			+ '<td><label>地址</label></td>'
+    			+ '<td><input name="address" /></td>'
+    			+ '</tr><tr>'
+    			+ '<td><label>密码</label></td>'
+    			+ '<td><input type="password" name="pwd" /></td>'
+    			+ '<td><label>密码确认</label></td>'
+    			+ '<td><input type="password" name="pwdConfig" /></td>'
+    			+ '</tr><tr>'
+    			+ '<td><label>电话</label></td>'
+    			+ '<td><input name="phone" /></td>'
+    			+ '<td><label>手机</label></td>'
+    			+ '<td><input name="mobile" /></td>'
+    			+ '</tr><tr>'
+    			+ '<td><label>备注</label></td>'
+    			+ '<td colspan="3" ><textarea name="remark"/></td>'
+    			+ '</tr><tr>'
+    			+ '<td></td>'
+    			+ '<td><button id="add_user_config">提交</button></td>'
+    			+ '<td><button id="add_user_cancel">清空</button></td>'
+    			+ '<td></td>'
+    			+ '</tr></table></div>';
+    		
+    		$("#result_container").append(html);
+    		
+    	});
+    }
+    
+    function addUserConfig(){
+    	$("#add_user_config").click(function(){
+    		
+    		var name = $();
+    	});
+    	
+    }
+    
+    function addUserCancel(){
+    	
     }
     
     /**
      * 数据绑定操作事件
      */
     function dataOpreate(){
-        $("#user_query_result .opreate").click(function(event){
+        $("#user_query_result .opreate").on('click',function(event){
             var userId = $(this).parent().parent().attr("data_id");
             switch ($(this).index()){
             case 0:
                 //详情
+            	console.info("detail...");
                 break;
             case 1:
                 //修改
+            	console.info("update");
                 break;
             case 2:
                 //删除
@@ -61,30 +117,31 @@ define([ "util/param", "tmpl/htmlmodel","tmpl/commtmpl","doT" ],
     }
 
     function queryUser() {
-        $("#user_query").click(function ()
-        {
+        $("#user_query_btn").click(function (){
+        	$("#result_container").children().hide();
+        	$('.show_data').show();
+        	
             var name = $("user_name").text(), 
             phone = $("#user_phone").text();
             $.post(url, {
                 name : name,
                 phone : phone,
                 curPage : 1,
-                pageSize : 5,
+                pageSize : param.PAGE_NUM,
                 type : 1
             }, function(data){showData(data);}, "json");
         });
     }
-    
-    
 
-    function showData(data) {
+    function showData(obj) {
+    	
         $("#user_query_result > tbody").empty();
         var def = {
             page : commTmpl.page
         },
         userFn = doT.compile(commTmpl.dataTbody, def),
         data = {
-            data : data.content.result,
+            data : obj.content.result,
             model : dataModel,
             operate : [ param.detail, param.modified, param.del ],
             page : {
@@ -96,7 +153,6 @@ define([ "util/param", "tmpl/htmlmodel","tmpl/commtmpl","doT" ],
         $("#user_query_result > tbody").html(userFn(data));
         
         dataOpreate();
-
     }
 
     function create() {
@@ -104,12 +160,13 @@ define([ "util/param", "tmpl/htmlmodel","tmpl/commtmpl","doT" ],
             $("#user_manager").show();
         } else {
             var inpFn = doT.template(commTmpl.inputTd),
-            selFn = doT.template(commTmpl.selectTd),
+//            selFn = doT.template(commTmpl.selectTd),
             butFn = doT.template(commTmpl.norBut),
             data = {
                 mcId : "user_manager",
                 mcCls : "",
                 id : "user_query",
+                resultId: "result_container",
                 resultCls : "result_container",
                 tableId : "user_query_result",
                 list : [ {
@@ -125,11 +182,11 @@ define([ "util/param", "tmpl/htmlmodel","tmpl/commtmpl","doT" ],
                     })
                 }, {
                     first : butFn({
-                        id : "user_add",
+                        id : "user_add_btn",
                         name : param.add
                     }),
                     second : butFn({
-                        id : "user_query",
+                        id : "user_query_btn",
                         name : param.query
                     })
                 } ],

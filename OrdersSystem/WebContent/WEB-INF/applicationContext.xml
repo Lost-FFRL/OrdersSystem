@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:p="http://www.springframework.org/schema/p"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+           http://www.springframework.org/schema/beans/spring-beans.xsd">
+           
+<!-- 导入其它bean配置文件 <import source="" /> -->
+	<bean id="buyerBean" class="com.os.bean.Buyer"></bean>
+	<bean id="expressBean" class="com.os.bean.Express"></bean>
+	<bean id="jsonResultBean" class="com.os.bean.JsonResult" />
+	<bean id="ordersBean" class="com.os.bean.Orders"></bean>
+	<bean id="ordersProductBean" class="com.os.bean.OrdersProduct"></bean>
+	<bean id="pageBean" class="com.os.bean.Page"></bean>
+	<bean id="payTypeBean" class="com.os.bean.PayType"></bean>
+	<bean id="productBean" class="com.os.bean.Product"></bean>
+	<bean id="userBean" class="com.os.bean.User"></bean>
+	
+	<bean id="userDao" class="com.os.dao.impl.UserDaoImpl"></bean>
+	
+	<bean id="userService" class="com.os.server.impl.UserServiceImpl">
+		<property name="userDao">
+			<ref bean="userDao" />
+		</property>
+	</bean>
+	
+	<bean id="userAction" class="com.os.action.UserAction">
+		<property name="userService" ref="userService" />
+	</bean>
+	<!-- 
+	<bean id="loginServlet" class="com.os.servlet.LoginServlet">
+		<property name="userAction" ref="userAction" />
+	</bean>
+	-->
+	<!-- more bean definitions go here -->
+
+</beans>

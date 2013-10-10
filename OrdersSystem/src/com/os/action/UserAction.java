@@ -5,6 +5,10 @@ import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.springframework.beans.factory.BeanFactory;
+import org.springframework.beans.factory.FactoryBean;
+import org.springframework.beans.factory.xml.XmlBeanFactory;
+
 import com.os.bean.Page;
 import com.os.bean.User;
 import com.os.server.UserService;
@@ -18,23 +22,22 @@ public class UserAction extends BaseAction
 {
     private UserService userService;
     
-    private User userBean;
+//    private User userBean;
     
-    public static String requstMsg(HttpServletRequest req)
+    public String requstMsg(HttpServletRequest req)
     {
         String result = "";
         int type = Integer.parseInt(req.getParameter("type"));
-        UserAction userAction = new UserAction();
         switch (type)
         {
             case 0:
-                result = userAction.login(type, req);
+                result = login(type, req);
                 break;
             case 1:
-                result = userAction.queryUser(type, req);
+                result = queryUser(type, req);
                 break;
             case 2:
-                result = userAction.delUser(type, req);
+                result = delUser(type, req);
                 break;
             default:
                 result = Utils.getRespJson(-2, type, Code.DESC_NO_SUPPORT, Constants.STRING_EMPTY);
@@ -45,7 +48,7 @@ public class UserAction extends BaseAction
     
     public String addUser(int type, HttpServletRequest req)
     {
-        userBean = new User();
+        User userBean = new User();
         userBean.setNumber(req.getParameter("num"));
         userBean.setName(req.getParameter("name"));
         userBean.setDesc(req.getParameter("desc"));
@@ -94,10 +97,9 @@ public class UserAction extends BaseAction
     public String queryUser(int type, HttpServletRequest req)
     {
         Page page = null;
-        userBean = new User();
+        User userBean = new User();
         userBean.setName(req.getParameter("name"));
         userBean.setPhone(req.getParameter("phone"));
-        userService = new UserServiceImpl();
         int count = userService.getCount(userBean);
         if (count > 0){
             page = new Page();
@@ -108,14 +110,15 @@ public class UserAction extends BaseAction
             page.setCurPage(curPage <= 0 ? 1 : curPage);
             List<User> reuslt = userService.query(userBean,page); 
             page.setResult(reuslt);
+            int totalPage = count% pageSize == 0 ? count / pageSize : count / pageSize +1;
+            page.setTotalPage(totalPage);
         }
         return Utils.getRespJson(Code.SUECCESS, type, Code.DESC_SUCCESS, page);
     }
     
     public String checkUser(int type, HttpServletRequest req)
     {
-        userService = new UserServiceImpl();
-        userBean = new User();
+    	User userBean = new User();
         userBean.setAccount(req.getParameter("user"));
         userBean.setPassword(req.getParameter("pwd"));
         int code = 0;
@@ -135,8 +138,7 @@ public class UserAction extends BaseAction
     
     public String login(int type, HttpServletRequest req)
     {
-        userService = new UserServiceImpl();
-        userBean = new User();
+    	User userBean = new User();
         userBean.setAccount(req.getParameter("user"));
         userBean.setPassword(req.getParameter("pwd"));
         int code = 0;
@@ -157,4 +159,9 @@ public class UserAction extends BaseAction
         }
         return Utils.getRespJson(code, type, desc);
     }
+
+	public void setUserService(UserService userService) {
+		this.userService = userService;
+	}
+    
 }

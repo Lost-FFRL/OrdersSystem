@@ -166,12 +166,10 @@ public class UserDaoImpl extends BaseDaoAbstract implements UserDao
             .append(SqlUtils.querySql("AND", "phone", "LIKE", user.getPhone()))
             .append(SqlUtils.querySql("AND", "status", "!=", "0"))
             .append(" ORDER BY createDate DESC ");
-        if (null != page)
-        {
+        if (null != page){
             int start = (page.getCurPage()-1) * page.getPageSize();
             start = start < 0 ? 0 : start;
-            int end = start + page.getPageSize() - 1;
-            excSql.append("LIMIT " + start + "," + end);
+            excSql.append(" LIMIT " + start + "," + page.getPageSize());
         }
         LOG.debug("Execute SQL = " + excSql.toString());
         List<User> userList = null;

@@ -53,5 +53,8 @@ define({
         + '<span class="previous">{{=it.page.previous}}</span>'
         + '<span class="current">0</span>&nbsp;&nbsp;/&nbsp;&nbsp;<span class="total">0</span>'
         + '<span class="next">{{=it.page.next}}</span>'
-        + '</div>'
+        + '</div>',
+    form: '<div id={{=it.id || ""}} class="form"> '
+    	+ ''
+    	+ '</div>'
 });
